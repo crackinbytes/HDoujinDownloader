@@ -41,7 +41,7 @@ function GetChapters()
         http.Referer = url
 
         url = SetParameter(url, 'page', currentPageIndex)
-        dom = Dom.New(http.Get(url.."/livewire/message/frontend.novel-chapters-list"))
+        dom = Dom.New(http.Get(url))
 
         local chapterNodes = dom.SelectElements('(//ul[@role="list"])[1]//a[contains(@href,"/chapters/")]')
 
@@ -52,10 +52,12 @@ function GetChapters()
 
             chapter.Url = chapterNode.SelectValue('./@href')
             chapter.Title = chapterNode.SelectValue('.//p')
-
+            
             chapters.Add(chapter)
 
         end
+
+        sleep(10)
 
     end
 
@@ -65,6 +67,11 @@ end
 
 function GetPages()
 
-    pages.AddRange(dom.SelectValues('//main//img/@src'))
+    pages.AddRange(dom.SelectValues('//main//img[contains(@src,"media.reaperscans.com") or contains(@class,"max-w-full mx-auto display-block")]/@src'))
 
+end
+
+function sleep(s)
+    local ntime = os.clock() + s/10
+    repeat until os.clock() > ntime
 end
